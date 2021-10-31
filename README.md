@@ -89,17 +89,95 @@ npm start
 
 - Download Android Studios `https://developer.android.com/studio`
 
-  -
+  - Open preferences > System Settings > Android SDK
+  - SDK tab, you should have the latest version
+  - SDK Tools tab, you should tick intel `x86 emulator acc...`
 
 - Also, if on mac, `https://docs.expo.dev/workflow/android-studio-emulator/`
   - Need to add android SDK to path
 
+Add the below to your `.zshrc`
+
 ```
-[ -d "$HOME/Library/Android/sdk" ] && ANDROID_SDK=$HOME/Library/Android/sdk || ANDROID_SDK=$HOME/Android/Sdk
-echo "export ANDROID_SDK=$ANDROID_SDK" >> ~/`[[ $SHELL == *"zsh" ]] && echo '.zshenv' || echo '.bash_profile'`
-
-echo "export PATH=$HOME/Library/Android/sdk/platform-tools:\$PATH" >> ~/`[[ $SHELL == *"zsh" ]] && echo '.zshenv' || echo '.bash_profile'`
-
+export ANDROID_SDK=/your/path/here
+export PATH=$HOME/Library/Android/sdk/platform-tools:\$PATH
 ```
 
 - Then try to run `adb`
+
+### Using Yarn workspaces
+
+https://www.youtube.com/watch?v=um90kBJ_hG0
+
+#### setup
+
+- Once your Mobile app is created, you can move the contents into a `mobile` directory (do it in the finder, use `Shift + Command + >` to show hidden files)
+- Put your `mobile` directory into a `packages` directory (this will be the parent)
+- enter into the packages folder `cd packages`
+- create a new react Application `npx create-react-app web`
+- or to rename, `mv oldName/ newName`
+- within packages, also create a `common` folder.
+- `cd ..` to get back to the outer folder where `packages live`
+- run `yarn init` and make sure `private = true`
+  - Go into `packages.json`
+  - add the following code to tell the app where to find our applications:
+
+```
+  "workspaces": [
+    "packages/*"
+  ]
+```
+
+- Make the app work with the new structure
+  - Go into the `package.json` of the mobile package and add the below code.
+  - This will install all the react native dependencies inside its own folder rather than in the root directory. it doesn't work well with pckages outside of the directory.
+
+```
+  "workspaces": {
+    "nohoist": [
+      "**"
+    ]
+  }
+```
+
+- Delete the node modules from mobile
+
+```
+rm -rf packages/mobile/node_modules/
+rm -rf packages/mobile/yarn.lock
+rm -rf packages/web/node_modules/
+rm -rf packages/web/yarn.lock
+```
+
+#### I did this, it didn't tell me to, but it worked
+
+- move the dependencies from the packages.json in the /mobile and the /web folder into the root packages.json, and add some config to run both mobile and app:
+
+```
+  "scripts": {
+    "mobile": "cd packages/mobile && npm start",
+    "web": "cd packages/web && npm run start"
+  },
+```
+
+- run `yarn install` again in the root directory
+
+### Using Common code
+
+Within Common, we want to do a `yarn init`
+
+```
+cd packages/common
+yarn init
+change the name to @universal/common
+```
+
+Within the `mobile` and the `web` we will need to add the `common` folder as a dev dependency by adding to the packages.json
+
+```
+  "devDependencies": {
+    "@universal/common": "1.0.0"
+  },
+```
+
+so now we can import as... `import {something} from '@universal/common/...`

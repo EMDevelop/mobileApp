@@ -1,0 +1,32 @@
+{
+  "name": "mobileApp",
+  "scripts": {
+    "mobile": "cd packages/mobile && npm start",
+    "web": "cd packages/web && npm run start"
+  },
+  "dependencies": {
+    "expo": "~43.0.0",
+    "expo-status-bar": "~1.1.0",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "react-native": "0.64.2",
+    "react-native-web": "0.17.1",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.0.1",
+    "@universal/common": "1.0.0"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/EMDevelop/mobileApp.git",
+  "author": "EMDevelop <edwardmartin.inbox@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
